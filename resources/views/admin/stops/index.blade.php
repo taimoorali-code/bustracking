@@ -39,35 +39,41 @@
                 </svg>
             </button>
         </div>
-        
+
         <div class="d-aside-right-bar bg-grey">
             <!-- Include Sidebar Component -->
             @include('components.sidebar')
 
             <div class="admin-content-right">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <h2 class="box-heading mt-3">Available Drivers</h2>
+                    <h2 class="box-heading mt-3">Available Stops</h2>
                     {{-- <button class="button button-outline-primary button-round">Create Drivers</button> --}}
-                    <a href="{{route('drivers.create')}}" class="button button-outline-primary button-round">Create Drivers</a>
+                    <a href="{{ route('stops.create') }}" class="button button-outline-primary button-round">Create
+                       Bus Stop</a>
                 </div>
                 <div class="transaction-table shadow-sm">
                     <table class="table">
                         <thead>
                             <tr>
+                                {{-- <th>#</th> --}}
+                                <th>Route</th>
                                 <th>Name</th>
-                                <th>Email</th>
-                                <th>Action</th>
+                                <th>Description</th>
+                                <th>Sequence</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($drivers as $driver)
+                            @foreach ($stops as $stop)
                                 <tr>
-                                    <td>{{ $driver->name }}</td>
-                                    <td>{{ $driver->email }}</td>
-                                   
+                                    {{-- <td>{{ $stop->id }}</td> --}}
+                                    <td>{{ $stop->route->name }}</td>
+                                    <td>{{ $stop->name }}</td>
+                                    <td>{{ $stop->description }}</td>
+                                    <td>{{ $stop->sequence }}</td>
                                     <td>
-                                        <a href="{{ route('drivers.edit', $driver->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="{{ route('drivers.destroy', $driver->id) }}" method="POST" style="display:inline;">
+                                        <a href="{{ route('stops.edit', $stop->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="{{ route('stops.destroy', $stop->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger"
@@ -77,7 +83,6 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                        
                     </table>
                 </div>
             </div>

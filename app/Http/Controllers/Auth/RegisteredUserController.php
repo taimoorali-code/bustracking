@@ -32,7 +32,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -46,6 +46,19 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return $this->redirectToDashboard($user);
+    }
+    protected function redirectToDashboard(User $user): RedirectResponse
+    {
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->role === 'driver') {
+            return redirect()->route('driver.viewRoute');
+        } elseif ($user->role === 'student') {
+            return redirect()->route('student.index');
+        }
+
+        // Default redirect if no role matches
+        return $this->redirectToDashboard($user);
     }
 }

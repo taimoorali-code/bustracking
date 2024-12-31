@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,9 +29,25 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        $user = Auth::user(); // Retrieve the authenticated user
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return $this->redirectToDashboard($user);
     }
+    protected function redirectToDashboard($user): RedirectResponse
+    {
+        // dd($user->role);  // Debug the role value
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->route('admin.dashboard');
+            case 'driver':
+                return redirect()->route('driver.viewRoute');
+            case 'student':
+                return redirect()->route('student.index');
+            default:
+                return redirect()->route('home');
+        }
+    }
+
 
     /**
      * Destroy an authenticated session.

@@ -46,28 +46,28 @@
 
             <div class="admin-content-right">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <h2 class="box-heading mt-3">Available Drivers</h2>
+                    <h2 class="box-heading mt-3">Available Buses Routes</h2>
                     {{-- <button class="button button-outline-primary button-round">Create Drivers</button> --}}
-                    <a href="{{route('drivers.create')}}" class="button button-outline-primary button-round">Create Drivers</a>
+                    <a href="{{route('bus-routes.create')}}" class="button button-outline-primary button-round">Create Buses Routes</a>
                 </div>
                 <div class="transaction-table shadow-sm">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
+                                <th>Buss Number</th>
+                                <th>Route Name</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($drivers as $driver)
+                            @foreach ($busRoutes as $busRoute)
                                 <tr>
-                                    <td>{{ $driver->name }}</td>
-                                    <td>{{ $driver->email }}</td>
-                                   
-                                    <td>
-                                        <a href="{{ route('drivers.edit', $driver->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="{{ route('drivers.destroy', $driver->id) }}" method="POST" style="display:inline;">
+                                    <td>{{ $busRoute->bus->bus_number ?? 'N/A' }}</td>
+                                    <td>{{ $busRoute->route->name ?? 'N/A' }}</td>
+                                    
+                                     <td>
+                                        <a href="{{ route('bus-routes.edit', $busRoute->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="{{ route('bus-routes.destroy', $busRoute->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger"

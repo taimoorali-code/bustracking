@@ -46,30 +46,38 @@
 
             <div class="admin-content-right">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <h2 class="box-heading mt-3">Available Busses</h2>
-                    <button class="button button-outline-primary button-round">Create Busses</button>
+                    <h2 class="box-heading mt-3">Available Buses</h2>
+                    {{-- <button class="button button-outline-primary button-round">Create Drivers</button> --}}
+                    <a href="{{route('buses.create')}}" class="button button-outline-primary button-round">Create Buses</a>
                 </div>
                 <div class="transaction-table shadow-sm">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Buss Number</th>
-                                <th>Capacity</th>
+                                <th>Bus Number</th>
+                                <th>Bus Capacity</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>BRF# 2345</td>
-                                <td>70</td>
-                                <td><button class="button button-outline-primary button-round">edit</button> <button class="button button-primary button-round" style="background: red">delete</button></td>
-                            </tr>
-                            <tr>
-                                <td>Ahmed</td>
-                                <td>ahmed@gmail.com</td>
-                                <td><button class="button button-outline-primary button-round">edit</button> <button class="button button-primary button-round" style="background: red">delete</button></td>
-                            </tr>
+                            @foreach ($buses as $bus)
+                                <tr>
+                                    <td>{{ $bus->bus_number }}</td>
+                                    <td>{{ $bus->capacity }}</td>
+                                    
+                                    <td>
+                                        <a href="{{ route('buses.edit', $bus->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="{{ route('buses.destroy', $bus->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this stop?')">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
+                        
                     </table>
                 </div>
             </div>

@@ -23,7 +23,7 @@
                 <div class="internal-profile">
 
                     <div class="name-detail d-none d-md-block">
-                        <h6 style="font-weight: bold">Admin Dashboard</h6>
+                        <h6 style="font-weight: bold">Student Dashboard</h6>
                     </div>
                 </div>
             </div>
@@ -42,43 +42,17 @@
         
         <div class="d-aside-right-bar bg-grey">
             <!-- Include Sidebar Component -->
-            @include('components.sidebar')
+            @include('components.studentsidebar')
 
             <div class="admin-content-right">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <h2 class="box-heading mt-3">Available Drivers</h2>
-                    {{-- <button class="button button-outline-primary button-round">Create Drivers</button> --}}
-                    <a href="{{route('drivers.create')}}" class="button button-outline-primary button-round">Create Drivers</a>
+                    <h2 style="color: black; font-weight: bold">Route Lists</h2>
+                    {{-- <p>Description: {{ $busRoute->route->description }}</p> --}}
+                                        {{-- <button class="button button-outline-primary button-round">Create Drivers</button> --}}
+                    <a href="{{route('buses.create')}}" class="button button-outline-primary button-round">Active Route</a>
                 </div>
                 <div class="transaction-table shadow-sm">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($drivers as $driver)
-                                <tr>
-                                    <td>{{ $driver->name }}</td>
-                                    <td>{{ $driver->email }}</td>
-                                   
-                                    <td>
-                                        <a href="{{ route('drivers.edit', $driver->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="{{ route('drivers.destroy', $driver->id) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Are you sure you want to delete this stop?')">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                        
-                    </table>
+                   
                 </div>
             </div>
         </div>

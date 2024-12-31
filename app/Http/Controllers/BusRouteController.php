@@ -2,25 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bus;
 use App\Models\BusRoute;
+use App\Models\Route;
+use App\Models\User; // Use the User model
 use Illuminate\Http\Request;
 
 class BusRouteController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('admin');
-    }
-
     public function index()
     {
-        $busRoutes = BusRoute::all();
+        // Eager load 'user' as driver in the BusRoute model
+        $busRoutes = BusRoute::with(['bus', 'route', 'user'])->get();
         return view('admin.bus-routes.index', compact('busRoutes'));
     }
 
     public function create()
     {
-        return view('admin.bus-routes.create');
+        $buses = Bus::all();
+        $routes = Route::all();
+        // Fetch users with the 'driver' role for assignment
+        $drivers = User::where('role', 'driver')->get();
+        return view('admin.bus-routes.create', compact('buses', 'routes', 'drivers'));
     }
 
     public function store(Request $request)
@@ -28,6 +31,7 @@ class BusRouteController extends Controller
         $validated = $request->validate([
             'bus_id' => 'required|exists:buses,id',
             'route_id' => 'required|exists:routes,id',
+            'user_id' => 'required|exists:users,id', // Validate user_id (driver)
         ]);
 
         BusRoute::create($validated);
@@ -42,7 +46,11 @@ class BusRouteController extends Controller
 
     public function edit(BusRoute $busRoute)
     {
-        return view('admin.bus-routes.edit', compact('busRoute'));
+        $buses = Bus::all();
+        $routes = Route::all();
+        // Fetch users with the 'driver' role for assignment
+        $drivers = User::where('role', 'driver')->get();
+        return view('admin.bus-routes.edit', compact('busRoute', 'buses', 'routes', 'drivers'));
     }
 
     public function update(Request $request, BusRoute $busRoute)
@@ -50,6 +58,7 @@ class BusRouteController extends Controller
         $validated = $request->validate([
             'bus_id' => 'required|exists:buses,id',
             'route_id' => 'required|exists:routes,id',
+            'user_id' => 'required|exists:users,id', // Validate user_id (driver)
         ]);
 
         $busRoute->update($validated);

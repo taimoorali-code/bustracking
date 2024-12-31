@@ -46,28 +46,28 @@
 
             <div class="admin-content-right">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <h2 class="box-heading mt-3">Available Drivers</h2>
+                    <h2 class="box-heading mt-3">Available Routes</h2>
                     {{-- <button class="button button-outline-primary button-round">Create Drivers</button> --}}
-                    <a href="{{route('drivers.create')}}" class="button button-outline-primary button-round">Create Drivers</a>
+                    <a href="{{route('routes.create')}}" class="button button-outline-primary button-round">Create Routes</a>
                 </div>
                 <div class="transaction-table shadow-sm">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
+                                <th>Route Id</th>
+                                <th>Route Name</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($drivers as $driver)
+                            @foreach ($routes as $route)
                                 <tr>
-                                    <td>{{ $driver->name }}</td>
-                                    <td>{{ $driver->email }}</td>
-                                   
+                                    <td>{{ $route->id }}</td>
+                                    <td>{{ $route->name }}</td>
+                                    
                                     <td>
-                                        <a href="{{ route('drivers.edit', $driver->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="{{ route('drivers.destroy', $driver->id) }}" method="POST" style="display:inline;">
+                                        <a href="{{ route('routes.edit', $route->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="{{ route('routes.destroy', $route->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger"
