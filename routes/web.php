@@ -6,6 +6,7 @@ use App\Http\Controllers\RouteController;
 use App\Http\Controllers\BusRouteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StopController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,9 +24,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/students', function () {
-    return view('student.index');
-})->name('student.index');
+Route::get('/student/dashboard', [StudentController::class, 'index'])->name('student.index');
+Route::get('/student/route/{id}', [StudentController::class, 'viewRouteDetails'])->name('student.routeDetails');
+
 
 
 Route::get('/dashboard', function () {

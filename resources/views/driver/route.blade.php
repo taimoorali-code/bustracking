@@ -49,7 +49,17 @@
                     <h2 style="color: black; font-weight: bold">Route Name: {{ $busRoute->route->name }}</h2>
                     {{-- <p>Description: {{ $busRoute->route->description }}</p> --}}
                                         {{-- <button class="button button-outline-primary button-round">Create Drivers</button> --}}
-                    <a href="{{route('buses.create')}}" class="button button-outline-primary button-round">Active Route</a>
+                    {{-- <a href="{{route('driver.activateRoute',  $busRoute->user_id)}}" class="button button-outline-primary button-round">Active Route</a> --}}
+                    <form action="{{route('driver.activateRoute',  $busRoute->id)}}" method="post" >
+                        @csrf
+                       
+                        {{-- <button class="button button-outline-primary button-round" type="submit"> Active Route</button> --}}
+                        <button 
+                        class="button-round {{ $busRoute->is_active ? 'btn btn-outline-danger' : 'btn btn-outline-primary' }}" 
+                        type="submit">
+                        {{ $busRoute->is_active ? 'Stop Bus' : 'Start Bus' }}
+                    </button>
+                    </form>
                 </div>
                 <div class="transaction-table shadow-sm">
                     <table class="table">
@@ -58,7 +68,7 @@
                                 <th>Stop Name</th>
                                 <th>Description</th>
                                 <th>Sequence</th>
-                                <th>Status</th>
+                                {{-- <th>Status</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -68,15 +78,32 @@
                                 <td>{{ $stop->name }}</td>
                                 <td>{{ $stop->description }}</td>
                                 <td>{{ $stop->sequence }}</td>
-                                <td>{{ $stop->tracking->status ?? 'Not Updated' }}</td>
+                                {{-- <td>{{ $stop->tracking->status ?? 'Not Updated' }}</td> --}}
                                 <td>
                                     <form action="{{ route('driver.updateStopStatus', $stop->id) }}" method="POST">
                                         @csrf
-                                        <select name="status" class="form-select">
-                                            <option value="arrived">Arrived</option>
-                                            <option value="departed">Departed</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-primary">Update</button>
+                                        <div style="display: flex; gap: 5px">
+                                            {{-- Status Dropdown --}}
+                                            <select name="status" class="form-select">
+                                                <option value="pending" {{ optional($bustracking->get($stop->id))->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                                <option value="arrived" {{ optional($bustracking->get($stop->id))->status === 'arrived' ? 'selected' : '' }}>Arrived</option>
+                                                <option value="departed" {{ optional($bustracking->get($stop->id))->status === 'departed' ? 'selected' : '' }}>Departed</option>
+                                            </select>
+                        
+                                            {{-- Estimated Arrival Time Dropdown --}}
+                                            <select name="estimated_arrival_time" class="form-select">
+                                                <option disabled selected>Estimate Time Arrival</option>
+                                                <option value="15" {{ optional($bustracking->get($stop->id))->estimated_arrival_time == 15 ? 'selected' : '' }}>15 minutes</option>
+                                                <option value="30" {{ optional($bustracking->get($stop->id))->estimated_arrival_time == 30 ? 'selected' : '' }}>30 minutes</option>
+                                                <option value="60" {{ optional($bustracking->get($stop->id))->estimated_arrival_time == 1 ? 'selected' : '' }}>1 hour</option>
+                                                <option value="120" {{ optional($bustracking->get($stop->id))->estimated_arrival_time == 2 ? 'selected' : '' }}>2 hours</option>
+                                            </select>
+                        
+                                            <input type="hidden" name="bus_id" value="{{ $busRoute->bus->id }}">
+                                            <input type="hidden" name="stop_id" value="{{ $stop->id }}">
+                        
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </div>
                                     </form>
                                 </td>
                             </tr>

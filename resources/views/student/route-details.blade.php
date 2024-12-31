@@ -9,8 +9,8 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <link rel="stylesheet" href="../assets/css/style.css" />
-</head>
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
+    </head>
 
 <body>
     <main id="main">
@@ -49,36 +49,37 @@
                     <h2 style="color: black; font-weight: bold">Route Lists</h2>
                     {{-- <p>Description: {{ $busRoute->route->description }}</p> --}}
                     {{-- <button class="button button-outline-primary button-round">Create Drivers</button> --}}
-                    <a href="{{ route('buses.create') }}" class="button button-outline-primary button-round">Active
-                        Route</a>
+                    {{-- <a href="" class="button button-outline-primary button-round">Back</a> --}}
+                    <a href="{{ route('student.index') }}" class="button button-outline-primary button-round">Back to Routes</a>
+
+
                 </div>
                 <div class="transaction-table shadow-sm">
-                    <div class="container">
-                        <h2 class="text-center my-4">Bus Routes</h2>
-                        <div class="row">
-                            @foreach($busRoutes as $busRoute)
-                                <div class="col-md-4">
-                                    <div class="card mb-4 shadow-sm">
-                                        <div class="card-body">
-                                            <!-- Correct way to access the route name -->
-                                            <h5 class="card-title">Route Name: {{ $busRoute->route->name }}</h5>
-                                            <p class="card-text">
-                                                <strong>Bus:</strong> {{ $busRoute->bus->bus_number }}<br>
-                                                <strong>Status:</strong> 
-                                                <span class="badge {{ $busRoute->is_active == 1 ? 'bg-success' : 'bg-danger' }}">
-                                                    {{ $busRoute->is_active == 1 ? 'Active' : 'Inactive' }}
-                                                </span>
-                                            </p>
-                                            <a href="{{ route('student.routeDetails', $busRoute->id) }}" class="btn btn-primary">
-                                                View Details
-                                            </a>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Stop Name</th>
+                                <th>Status</th>
+                                <th>Estimated Arrival Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($stopsStatus as $stopStatus)
+                                <tr>
+                                    <td>{{ $stopStatus['stop']->name }}</td>
+                                    <td>
+                                        <span
+                                            class="badge {{ $stopStatus['status'] === 'arrived' ? 'bg-success' : ($stopStatus['status'] === 'departed' ? 'bg-warning' : 'bg-secondary') }}">
+                                            {{ ucfirst($stopStatus['status']) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ $stopStatus['estimated_arrival_time'] ? \Carbon\Carbon::parse($stopStatus['estimated_arrival_time'])->format('h:i A') : 'N/A' }}
+                                    </td>
+                                </tr>
                             @endforeach
-                        </div>
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

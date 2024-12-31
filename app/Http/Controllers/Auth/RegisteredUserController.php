@@ -44,21 +44,9 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+    
 
-        return $this->redirectToDashboard($user);
+        return redirect()->route('login');
     }
-    protected function redirectToDashboard(User $user): RedirectResponse
-    {
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->role === 'driver') {
-            return redirect()->route('driver.viewRoute');
-        } elseif ($user->role === 'student') {
-            return redirect()->route('student.index');
-        }
-
-        // Default redirect if no role matches
-        return $this->redirectToDashboard($user);
-    }
+  
 }

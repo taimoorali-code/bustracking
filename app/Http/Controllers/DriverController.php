@@ -28,48 +28,79 @@ class DriverController extends Controller
     public function viewRoute()
     {
         $busRoute = BusRoute::where('user_id', Auth::id())
-            // ->where('is_active', true)
-            ->with('route.stops')
+            ->with(['route.stops', 'bus'])
             ->first();
-            // dd($busRoute);
 
-        if (!$busRoute) {
-            return redirect()->back()->with('error', 'No active route assigned.');
-        }
-        return view('driver.route', compact('busRoute'));
+        // if (!$busRoute) {
+        //     return redirect()->back()->with('error', 'No active route assigned.');
+        // }
+
+        $bustracking = BusTracking::where('bus_id', $busRoute->bus->id)
+            ->get()
+            ->keyBy('stop_id'); // Key by stop_id for easy lookup
+
+        return view('driver.route', compact('busRoute', 'bustracking'));
     }
     public function updateStopStatus(Request $request, $stopId)
     {
+        // dd($request->all());
+        // Validate request inputs
         $request->validate([
-            'status' => 'required|in:arrived,departed',
+            'status' => 'required',
+            'bus_id' => 'required|exists:buses,id',
+            'stop_id' => 'required|exists:stops,id',
         ]);
 
-        $busTracking = BusTracking::updateOrCreate(
+        // Calculate the estimated arrival time if provided
+        $estimatedArrivalTime = $this->calculateEstimatedArrivalTime($request->estimated_arrival_time);
+
+        // Update or create the record
+        BusTracking::updateOrCreate(
             [
                 'bus_id' => $request->bus_id,
-                'stop_id' => $stopId,
+                'stop_id' => $stopId, // Search conditions
             ],
             [
-                'status' => $request->status,
-                'estimated_arrival_time' => now(), // Can be adjusted for actual time tracking
+                'status' => $request->status, // Values to update
+                'estimated_arrival_time' => $estimatedArrivalTime,
             ]
         );
 
         return redirect()->back()->with('success', 'Stop status updated successfully.');
     }
+
+    protected function calculateEstimatedArrivalTime($timeInput)
+    {
+        // Define allowed values and their corresponding minutes
+        $allowedTimes = [
+            '15' => 15,
+            '30' => 30,
+            '60' => 60,
+            '120' => 120,
+        ];
+
+        if (isset($allowedTimes[$timeInput])) {
+            return now()->addMinutes($allowedTimes[$timeInput]);
+        }
+
+        return null; // Return null if the input is invalid or not in the allowed list
+    }
+
     public function activateRoute($routeId)
     {
-        $busRoute = BusRoute::where('route_id', $routeId)
-            ->where('driver_id', Auth::id())
+        $busRoute = BusRoute::where('id', $routeId)
+            ->where('user_id', Auth::id())
             ->first();
 
         if (!$busRoute) {
             return redirect()->back()->with('error', 'You are not assigned to this route.');
         }
 
-        $busRoute->update(['is_active' => true]);
+        // Toggle the is_active status
+        $busRoute->update(['is_active' => !$busRoute->is_active]);
 
-        return redirect()->route('driver.viewRoute')->with('success', 'Route activated.');
+        $message = $busRoute->is_active ? 'Route activated.' : 'Route deactivated.';
+        return redirect()->route('driver.viewRoute')->with('success', $message);
     }
 
 

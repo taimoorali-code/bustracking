@@ -47,19 +47,19 @@ return new class extends Migration {
         // Bus Routes Table
         Schema::create('bus_routes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bus_id')->constrained()->onDelete('cascade');
-            $table->foreignId('route_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('bus_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('route_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
 
         // Bus Tracking Table
-        Schema::create('bus_tracking', function (Blueprint $table) {
+        Schema::create('bus_trackings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bus_id')->constrained()->onDelete('cascade');
             $table->foreignId('stop_id')->constrained()->onDelete('cascade');
-            $table->enum('status', ['arrived', 'departed'])->default('departed');
+            $table->enum('status', ['arrived', 'departed', 'pending'])->default('pending');
             $table->timestamp('estimated_arrival_time')->nullable();
             $table->timestamps();
         });

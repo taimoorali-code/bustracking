@@ -9,7 +9,7 @@ class BusRoute extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['bus_id', 'route_id', 'is_active'];
+    protected $fillable = ['bus_id', 'route_id', 'user_id', 'is_active'];
 
     // A bus route belongs to a bus (relationship)
     public function bus()
